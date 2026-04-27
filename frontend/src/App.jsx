@@ -1,30 +1,80 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import PredictionForm from './pages/PredictionForm';
+import { useState } from "react";
 
-function App() {
+export default function App() {
+  const [form, setForm] = useState({
+    age: 65,
+    gender: "M",
+    admission_type: "URGENT",
+    myocardial_infarction: 1,
+    heart_failure: 0,
+    cardiac_arrest: 0,
+    chronic_ischemic_hd: 1,
+    los: 5
+  });
+
+  const [result, setResult] = useState(null);
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const predict = async () => {
+    const res = await fetch("http://127.0.0.1:8000/predict", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        ...form,
+        age: Number(form.age),
+        los: Number(form.los),
+        myocardial_infarction: Number(form.myocardial_infarction),
+        heart_failure: Number(form.heart_failure),
+        cardiac_arrest: Number(form.cardiac_arrest),
+        chronic_ischemic_hd: Number(form.chronic_ischemic_hd)
+      })
+    });
+
+    const data = await res.json();
+    setResult(data);
+  };
+
   return (
-    <Router>
-      <div className="min-h-screen text-slate-100 p-6 flex flex-col md:p-12 pb-32">
-        <header className="mb-12">
-          <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 flex items-center gap-3 w-fit">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-            </svg>
-            MediRisk
-          </h1>
-        </header>
+    <div style={{ padding: 30, fontFamily: "Arial" }}>
+      <h1>💙 Mortality Risk Predictor</h1>
 
-        <main className="flex-1 max-w-4xl w-full mx-auto animate-fade-in flex flex-col items-center">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/predict" element={<PredictionForm />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+      <input name="age" placeholder="Age" onChange={handleChange} /><br /><br />
+
+      <select name="gender" onChange={handleChange}>
+        <option value="M">Male</option>
+        <option value="F">Female</option>
+      </select><br /><br />
+
+      <select name="admission_type" onChange={handleChange}>
+        <option value="URGENT">Urgent</option>
+        <option value="EMERGENCY">Emergency</option>
+        <option value="ELECTIVE">Elective</option>
+      </select><br /><br />
+
+      <input name="los" placeholder="Length of stay" onChange={handleChange} /><br /><br />
+
+      <input name="myocardial_infarction" placeholder="MI (0/1)" onChange={handleChange} /><br /><br />
+      <input name="heart_failure" placeholder="Heart Failure (0/1)" onChange={handleChange} /><br /><br />
+      <input name="cardiac_arrest" placeholder="Cardiac Arrest (0/1)" onChange={handleChange} /><br /><br />
+      <input name="chronic_ischemic_hd" placeholder="Chronic Ischemic HD (0/1)" onChange={handleChange} /><br /><br />
+
+      <button onClick={predict}>Predict</button>
+
+      {result && (
+        <div style={{ marginTop: 20 }}>
+          <h2>Result:</h2>
+          <p><b>Prediction:</b> {result.prediction}</p>
+          <p><b>Probability:</b> {result.probability}</p>
+        </div>
+      )}
+    </div>
   );
 }
-
-export default App;
