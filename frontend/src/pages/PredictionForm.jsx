@@ -82,16 +82,16 @@ export default function PredictionForm() {
 
   const getRiskStatus = (probability) => {
     const probPct = probability * 100;
-    if (probPct < 30) return { text: "Low Risk", color: "text-emerald-400", bg: "bg-emerald-500/20", icon: <CheckCircle2 className="w-12 h-12 text-emerald-400" /> };
-    if (probPct <= 60) return { text: "Medium Risk", color: "text-amber-400", bg: "bg-amber-500/20", icon: <AlertOctagon className="w-12 h-12 text-amber-400" /> };
-    return { text: "High Risk", color: "text-rose-500", bg: "bg-rose-500/20", icon: <AlertOctagon className="w-12 h-12 text-rose-500" /> };
+    if (probPct < 30) return { text: "Low Risk", color: "text-emerald-700", bg: "bg-emerald-100", icon: <CheckCircle2 className="w-12 h-12 text-emerald-600" /> };
+    if (probPct <= 60) return { text: "Medium Risk", color: "text-amber-700", bg: "bg-amber-100", icon: <AlertOctagon className="w-12 h-12 text-amber-600" /> };
+    return { text: "High Risk", color: "text-rose-700", bg: "bg-rose-100", icon: <AlertOctagon className="w-12 h-12 text-rose-600" /> };
   };
 
   if (loadingConfig) {
     return (
       <div className="flex flex-col items-center justify-center mt-32 space-y-4">
-        <Loader2 className="w-12 h-12 animate-spin text-blue-500" />
-        <p className="text-slate-400">Loading clinical model configuration...</p>
+        <Loader2 className="w-12 h-12 animate-spin text-green-600" />
+        <p className="text-green-800/60">Loading clinical model configuration...</p>
       </div>
     );
   }
@@ -105,14 +105,14 @@ export default function PredictionForm() {
         <div className={`p-6 rounded-full mb-6 ${status.bg}`}>
           {status.icon}
         </div>
-        <h2 className="text-3xl font-bold mb-2">Analysis Complete</h2>
+        <h2 className="text-3xl font-bold mb-2 text-green-900">Analysis Complete</h2>
         
         <div className="flex flex-col items-center mt-8 w-full max-w-sm">
-          <div className="flex justify-between w-full mb-2 text-sm font-medium">
-            <span className="text-slate-400">Mortality Probability</span>
+          <div className="flex justify-between w-full mb-2 text-sm font-semibold">
+            <span className="text-green-800/60 font-medium">Mortality Probability</span>
             <span className={status.color}>{probPct}%</span>
           </div>
-          <div className="w-full bg-slate-800 rounded-full h-4 overflow-hidden outline outline-1 outline-slate-700">
+          <div className="w-full bg-slate-100 rounded-full h-4 overflow-hidden border border-slate-200 shadow-inner">
             <div 
               className={`h-full rounded-full transition-all duration-1000 ease-out ${probPct > 60 ? 'bg-rose-500' : probPct > 30 ? 'bg-amber-400' : 'bg-emerald-500'}`}
               style={{ width: `${probPct}%` }}
@@ -120,12 +120,12 @@ export default function PredictionForm() {
           </div>
         </div>
 
-        <div className="mt-10 p-6 bg-slate-900/50 rounded-xl border border-slate-700 w-full text-center">
-          <p className="text-slate-400 text-sm uppercase tracking-wider mb-1">Risk Evaluation</p>
-          <p className={`text-4xl font-extrabold ${status.color}`}>
+        <div className="mt-10 p-6 bg-white/50 rounded-2xl border border-green-100 w-full text-center shadow-sm">
+          <p className="text-green-800/40 text-xs uppercase tracking-widest font-bold mb-1">Risk Evaluation</p>
+          <p className={`text-5xl font-black ${status.color}`}>
             {status.text}
           </p>
-          <p className="text-slate-400 text-sm mt-4">
+          <p className="text-green-800/60 text-sm mt-4 font-medium">
             Clinical threshold: {(result.threshold * 100).toFixed(0)}%
           </p>
         </div>
@@ -133,13 +133,13 @@ export default function PredictionForm() {
         <div className="flex gap-4 mt-10">
           <button 
             onClick={resetForm}
-            className="px-6 py-3 rounded-lg font-medium border border-blue-500 text-blue-400 hover:bg-blue-500/10 transition-colors"
+            className="px-6 py-3 rounded-xl font-bold border-2 border-green-600 text-green-700 hover:bg-green-50 transition-colors"
           >
             New Assessment
           </button>
           <button 
             onClick={() => navigate('/')}
-            className="px-6 py-3 rounded-lg font-medium bg-slate-800 hover:bg-slate-700 transition-colors"
+            className="px-6 py-3 rounded-xl font-bold bg-green-50 text-green-800 border border-green-100 hover:bg-green-100 transition-colors"
           >
             Back Home
           </button>
@@ -150,13 +150,13 @@ export default function PredictionForm() {
 
   const renderField = (field) => {
     const { name, type, options } = field;
-    const commonClass = "bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all shadow-inner";
+    const commonClass = "bg-white border border-green-100 rounded-xl px-4 py-3 text-green-900 placeholder-green-800/30 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all shadow-sm";
     
     return (
       <div key={name} className="flex flex-col space-y-2">
-        <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+        <label className="text-xs font-bold text-green-800/60 uppercase tracking-widest flex items-center gap-1.5 ml-1">
           {formatFeatureName(name)}
-          {field.important && <span className="w-1.5 h-1.5 rounded-full bg-blue-500" title="Required Feature"></span>}
+          {field.important && <span className="w-1.5 h-1.5 rounded-full bg-green-500" title="Required Feature"></span>}
         </label>
         
         {type === 'categorical' || type === 'boolean' ? (
@@ -165,13 +165,13 @@ export default function PredictionForm() {
               name={name}
               value={formData[name]}
               onChange={handleChange}
-              className={`${commonClass} w-full appearance-none pr-10`}
+              className={`${commonClass} w-full appearance-none pr-10 font-medium`}
             >
               {options.map(opt => (
-                <option key={opt} value={opt} className="bg-slate-900 text-white">{opt === 0 ? "No" : opt === 1 ? "Yes" : opt}</option>
+                <option key={opt} value={opt} className="bg-white text-green-900">{opt === 0 ? "No" : opt === 1 ? "Yes" : opt}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-green-400 pointer-events-none" />
           </div>
         ) : (
           <input
@@ -195,36 +195,36 @@ export default function PredictionForm() {
     <div className="w-full max-w-4xl mt-4 animate-fade-in mb-20">
       <button 
         onClick={() => navigate('/')} 
-        className="flex items-center space-x-2 text-slate-400 hover:text-white transition-colors mb-6 group"
+        className="flex items-center space-x-2 text-green-800/60 hover:text-green-900 font-bold transition-colors mb-6 group"
       >
         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
         <span>Back to Home</span>
       </button>
 
-      <div className="glass-panel overflow-hidden">
-        <div className="bg-gradient-to-r from-blue-600/10 to-indigo-600/10 p-8 border-b border-slate-700/50">
+      <div className="glass-panel overflow-hidden border-2">
+        <div className="bg-gradient-to-r from-green-600/5 to-emerald-600/5 p-8 border-b border-green-50">
           <div className="flex justify-between items-start">
             <div>
-              <h2 className="text-3xl font-bold text-white mb-2">Patient Assessment</h2>
-              <p className="text-slate-400 max-w-lg">Enter the clinical parameters below. Essential fields have been prioritized for a faster workflow.</p>
+              <h2 className="text-3xl font-black text-green-900 mb-2">Patient Assessment</h2>
+              <p className="text-green-800/60 font-medium max-w-lg text-sm">Enter the clinical parameters below. Essential fields have been prioritized for a faster workflow.</p>
             </div>
-            <div className="bg-blue-500/10 p-3 rounded-xl border border-blue-500/20">
-              <Info className="w-6 h-6 text-blue-400" />
+            <div className="bg-green-500/10 p-3 rounded-2xl border border-green-500/20">
+              <Info className="w-6 h-6 text-green-600" />
             </div>
           </div>
         </div>
         
         <form onSubmit={handleSubmit} className="p-8 md:p-10 space-y-10">
           {error && (
-            <div className="bg-rose-500/10 border border-rose-500/50 text-rose-400 p-4 rounded-xl flex items-start gap-3 animate-shake">
+            <div className="bg-rose-50 border border-rose-200 text-rose-700 p-4 rounded-xl flex items-start gap-3 animate-shake font-medium">
               <AlertOctagon className="w-5 h-5 shrink-0 mt-0.5" />
               <p>{error}</p>
             </div>
           )}
 
           <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-              <span className="w-2 h-6 bg-blue-500 rounded-full"></span>
+            <h3 className="text-lg font-black text-green-900 flex items-center gap-2">
+              <span className="w-2 h-6 bg-green-500 rounded-full"></span>
               Primary Clinical Indicators
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -232,21 +232,21 @@ export default function PredictionForm() {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-800">
+          <div className="pt-4 border-t border-green-50">
             <button
               type="button"
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-300 transition-colors group"
+              className="flex items-center gap-2 text-xs font-bold text-green-800/40 uppercase tracking-widest hover:text-green-600 transition-colors group"
             >
-              <Settings2 className={`w-4 h-4 transition-transform duration-300 ${showAdvanced ? 'rotate-90 text-blue-400' : ''}`} />
+              <Settings2 className={`w-4 h-4 transition-transform duration-300 ${showAdvanced ? 'rotate-90 text-green-500' : ''}`} />
               {showAdvanced ? 'Hide Technical Parameters' : 'Show Technical Parameters (Advanced)'}
               {showAdvanced ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" /> }
             </button>
             
             {showAdvanced && (
               <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-slide-down">
-                <div className="col-span-full bg-slate-900/30 p-4 rounded-lg border border-slate-800 text-xs text-slate-500 italic mb-2">
-                  Technical parameters are pre-filled with clinical averages. Modify only if specific data is available.
+                <div className="col-span-full bg-green-50/50 p-4 rounded-xl border border-green-100 text-[10px] text-green-800/50 uppercase tracking-[2px] font-bold italic mb-2">
+                  Technical parameters are pre-filled with clinical averages.
                 </div>
                 {technicalFields.map(renderField)}
               </div>
@@ -257,17 +257,17 @@ export default function PredictionForm() {
             <button
               type="submit"
               disabled={isSubmitting || featureMeta.length === 0}
-              className="w-full relative px-8 py-5 bg-blue-600 hover:bg-blue-500 rounded-2xl font-bold text-xl shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all overflow-hidden flex items-center justify-center gap-3 group"
+              className="w-full relative px-8 py-5 bg-green-600 hover:bg-green-500 rounded-2xl font-black text-xl shadow-[0_10px_40px_rgba(22,163,74,0.2)] disabled:opacity-50 disabled:cursor-not-allowed transition-all overflow-hidden flex items-center justify-center gap-3 group"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-7 h-7 animate-spin" />
-                  Generating Risk Profile...
+                  <Loader2 className="w-7 h-7 animate-spin text-white" />
+                  <span className="text-white">Generating Risk Profile...</span>
                 </>
               ) : (
                 <>
-                  <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 background-animate group-hover:scale-105 transition-transform duration-500"></div>
-                  <span className="relative z-10">Run Mortality Prediction</span>
+                  <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-green-600 via-emerald-600 to-green-500 background-animate group-hover:scale-105 transition-transform duration-500"></div>
+                  <span className="relative z-10 text-white">Run Mortality Prediction</span>
                 </>
               )}
             </button>
